@@ -13,12 +13,16 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 function RoleGate({
   allow,
   children,
+  unauthorized,
 }: {
   allow: Array<'operator' | 'maintenance' | 'manager' | 'admin'>;
   children: ReactElement;
+  unauthorized?: ReactElement;
 }) {
   const role = useAppStore((s) => s.currentUser.role);
-  if (!allow.includes(role) && role !== 'admin') return <Navigate to="/" replace />;
+  if (!allow.includes(role) && role !== 'admin') {
+    return unauthorized ?? <Navigate to="/" replace />;
+  }
   return children;
 }
 
@@ -68,7 +72,7 @@ export default function App() {
         <Route
           path="/sistem"
           element={
-            <RoleGate allow={['admin']}>
+            <RoleGate allow={['admin']} unauthorized={<DashboardPage />}>
               <SystemPage />
             </RoleGate>
           }

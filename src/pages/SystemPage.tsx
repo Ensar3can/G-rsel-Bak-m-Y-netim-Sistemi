@@ -44,7 +44,7 @@ export function SystemPage() {
         className="rounded-xl bg-red-700 px-4 py-3 font-semibold text-white"
         onClick={() => {
           storage.clear();
-          pushToast('Yerel demo verisi temizlendi. Sayfa yenileniyor.', 'warning');
+          pushToast('Yerel veri temizlendi. Sayfa yenileniyor.', 'warning');
           window.setTimeout(() => window.location.reload(), 600);
         }}
       >

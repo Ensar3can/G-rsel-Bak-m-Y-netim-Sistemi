@@ -1,4 +1,5 @@
 import { MACHINE_LINES, MACHINE_PARTS, MACHINE_SECTIONS, USERS } from '@/data/catalog';
+import { MACHINE_IMAGE_KEYS } from '@/data/machineAssets';
 import type {
   Attachment,
   FaultCategory,
@@ -12,7 +13,7 @@ const PHOTO: Attachment = {
   id: 'att-seed',
   name: 'saha-foto.jpg',
   kind: 'photo',
-  url: '/assets/machines/photo-placeholder.svg',
+  url: MACHINE_IMAGE_KEYS.photoPlaceholder,
   createdAt: '2026-08-01T08:00:00.000Z',
 };
 

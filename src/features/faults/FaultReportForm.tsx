@@ -40,8 +40,8 @@ export const emptyForm = (lineId = ''): FaultFormValues => ({
 export function validateFaultForm(v: FaultFormValues): Record<string, string> {
   const e: Record<string, string> = {};
   if (!v.machineLineId) e.machineLineId = 'Makine hattı seçin.';
-  if (!v.sectionId) e.sectionId = 'Makine bölümü seçin.';
-  if (!v.partId) e.partId = 'Arızalı parçayı seçin.';
+  if (!v.sectionId) e.sectionId = 'Makine bölümünü şemadan seçin.';
+  if (!v.partId) e.partId = 'Arızalı parçayı şemadan veya listeden seçin.';
   if (!v.category) e.category = 'Hata kategorisi seçin.';
   if (!v.symptom.trim()) e.symptom = 'Belirti / neden girin.';
   if (v.description.trim().length < 12) e.description = 'Açıklama en az 12 karakter olmalı.';
@@ -60,66 +60,33 @@ interface Props {
 
 export function FaultReportForm({ values, errors, operatorName, onChange, onSubmit }: Props) {
   const field = (name: keyof FaultFormValues) => errors[name];
+  const line = MACHINE_LINES.find((l) => l.id === values.machineLineId);
+  const section = MACHINE_SECTIONS.find((s) => s.id === values.sectionId);
+  const part = MACHINE_PARTS.find((p) => p.id === values.partId);
+
   return (
     <form
-      className="grid gap-4 rounded-2xl bg-white p-4 shadow-card md:grid-cols-2"
+      className="grid grid-cols-1 gap-4 rounded-2xl bg-white p-4 shadow-card md:grid-cols-2"
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
       }}
     >
-      <label className="text-sm font-medium">
-        Makine hattı
-        <select
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
-          value={values.machineLineId}
-          onChange={(e) => onChange({ machineLineId: e.target.value })}
-        >
-          <option value="">Seçin</option>
-          {MACHINE_LINES.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.code} · {l.name}
-            </option>
-          ))}
-        </select>
-        {field('machineLineId') ? <span className="text-xs text-red-600">{field('machineLineId')}</span> : null}
-      </label>
-      <label className="text-sm font-medium">
-        Makine bölümü
-        <select
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
-          value={values.sectionId}
-          onChange={(e) => onChange({ sectionId: e.target.value })}
-        >
-          <option value="">Seçin</option>
-          {MACHINE_SECTIONS.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-        {field('sectionId') ? <span className="text-xs text-red-600">{field('sectionId')}</span> : null}
-      </label>
-      <label className="text-sm font-medium">
-        Arızalı parça
-        <select
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
-          value={values.partId}
-          onChange={(e) => onChange({ partId: e.target.value })}
-        >
-          <option value="">Seçin</option>
-          {MACHINE_PARTS.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
-          ))}
-        </select>
-        {field('partId') ? <span className="text-xs text-red-600">{field('partId')}</span> : null}
-      </label>
+      <div className="rounded-xl bg-navy-50 px-3 py-3 text-sm md:col-span-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">Şemadan seçilen konum</p>
+        <p className="mt-1 font-medium text-navy-900">
+          {line ? `${line.code} · ${line.name}` : 'Hat seçilmedi'}
+        </p>
+        <p className="text-navy-700">{section ? section.name : 'Bölüm: şemaya dokunun'}</p>
+        <p className="text-navy-700">{part ? `Parça: ${part.name}` : 'Parça: henüz seçilmedi'}</p>
+        {field('sectionId') ? <p className="mt-1 text-xs text-red-600">{field('sectionId')}</p> : null}
+        {field('partId') ? <p className="text-xs text-red-600">{field('partId')}</p> : null}
+        {field('machineLineId') ? <p className="text-xs text-red-600">{field('machineLineId')}</p> : null}
+      </div>
       <label className="text-sm font-medium">
         Hata kategorisi
         <select
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
+          className="mt-1 min-h-[44px] w-full rounded-xl border border-navy-200 px-3 py-2"
           value={values.category}
           onChange={(e) => onChange({ category: e.target.value as FaultCategory })}
         >
@@ -132,10 +99,19 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
         </select>
         {field('category') ? <span className="text-xs text-red-600">{field('category')}</span> : null}
       </label>
+      <label className="text-sm font-medium">
+        Arıza oluşma zamanı
+        <input
+          type="datetime-local"
+          className="mt-1 min-h-[44px] w-full rounded-xl border border-navy-200 px-3 py-2"
+          value={values.occurredAt}
+          onChange={(e) => onChange({ occurredAt: e.target.value })}
+        />
+      </label>
       <label className="text-sm font-medium md:col-span-2">
         Hata nedeni veya belirtisi
         <input
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
+          className="mt-1 min-h-[44px] w-full rounded-xl border border-navy-200 px-3 py-2"
           value={values.symptom}
           onChange={(e) => onChange({ symptom: e.target.value })}
         />
@@ -208,7 +184,7 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
           <input
             type="file"
             accept="image/*"
-            className="text-sm"
+            className="max-w-full text-sm"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (!file) {
@@ -232,18 +208,13 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
         </p>
         <p className="mt-1 text-xs">Kayıt arayüzü hazır; ses işleme bu sürümde bağlı değildir.</p>
       </div>
-      <label className="text-sm font-medium">
-        Arıza oluşma zamanı
-        <input
-          type="datetime-local"
-          className="mt-1 w-full rounded-xl border border-navy-200 px-3 py-2"
-          value={values.occurredAt}
-          onChange={(e) => onChange({ occurredAt: e.target.value })}
-        />
-      </label>
-      <label className="text-sm font-medium">
+      <label className="text-sm font-medium md:col-span-2">
         Bildirimi yapan operatör
-        <input className="mt-1 w-full rounded-xl border border-navy-200 bg-navy-50 px-3 py-2" value={operatorName} readOnly />
+        <input
+          className="mt-1 min-h-[44px] w-full rounded-xl border border-navy-200 bg-navy-50 px-3 py-2"
+          value={operatorName}
+          readOnly
+        />
       </label>
       <div className="md:col-span-2">
         <button

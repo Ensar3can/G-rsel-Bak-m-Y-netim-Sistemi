@@ -111,7 +111,7 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 
 1. **Kontrol paneli** — Aktif/kritik kayıtlar, bugün açılanlar, trend grafiği, son kayıtlar.
 2. **Yeni arıza bildir** — Hat seçimi, üç bölümlü makine şeması, hotspot, yapılandırılmış form. Kayıt `Yeni` durumunda oluşur, localStorage’a yazılır, bakım listesine düşer, detay sayfasına yönlendirilir.
-3. **Bakım panosu** — Duruma göre dikey kanban, üzerine al, not, malzeme, kök neden, kapatma.
+3. **Bakım panosu** — Duruma göre dikey kanban; özet kart ve müdahale paneli.
 4. **Arıza detayı** — Görsel konum, zaman çizelgesi, notlar, malzemeler, benzer kayıtlar.
 5. **Yapay zekâ önerileri** — Hızlı müdahale / standart / kapsamlı çözüm katmanları; kural tabanlı `aiRecommendationService`. Karar destek uyarısı içerir.
 6. **Raporlar** — Haftalık/aylık filtre, grafikler, KPI, yönetici özeti, PDF/Excel yakında mesajı.

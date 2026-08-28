@@ -39,10 +39,13 @@ export function ReportsPage() {
   const hydrated = useAppStore((s) => s.hydrated);
   const faults = useAppStore((s) => s.faults);
   const pushToast = useToast((s) => s.pushToast);
-  const [filter, setFilter] = useState<ReportFilter>({
-    from: subDays(new Date('2026-08-27'), 30).toISOString(),
-    to: new Date('2026-08-27T23:59:59').toISOString(),
-    period: 'monthly',
+  const [filter, setFilter] = useState<ReportFilter>(() => {
+    const end = new Date();
+    return {
+      from: subDays(end, 30).toISOString(),
+      to: end.toISOString(),
+      period: 'monthly',
+    };
   });
 
   const data = useMemo(() => applyReportFilter(faults, filter), [faults, filter]);
@@ -96,27 +99,31 @@ export function ReportsPage() {
     .map(([id, qty]) => ({ name: SPARE_PARTS.find((p) => p.id === id)?.name ?? id, qty }))
     .sort((a, b) => b.qty - a.qty);
 
-  const avgIntervention = avg(data.map((f) => f.estimatedRepairMinutes ?? 0).filter(Boolean));
-  const avgSolve = avg(data.map((f) => f.actualRepairMinutes ?? 0).filter(Boolean));
+  const interventionMins = data.map((f) => f.estimatedRepairMinutes ?? 0).filter(Boolean);
+  const solveMins = data.map((f) => f.actualRepairMinutes ?? 0).filter(Boolean);
+  const avgIntervention = avg(interventionMins);
+  const avgSolve = avg(solveMins);
   const critical = data.filter((f) => f.priority === 'critical').length;
   const stopCount = data.filter((f) => f.productionStopped).length;
 
   const topSection = [...bySection].sort((a, b) => b.count - a.count)[0];
   const sensorNow = data.filter((f) => f.category === 'sensor').length;
   const sensorPrev = prev.filter((f) => f.category === 'sensor').length;
-  const sensorPct =
-    sensorPrev === 0 ? 0 : Math.round(((sensorNow - sensorPrev) / sensorPrev) * 100);
-  const motorAvg = avg(
-    data.filter((f) => f.partId === 'part-motor').map((f) => f.actualRepairMinutes ?? 0).filter(Boolean),
-  );
-  const otherAvg = avg(
-    data.filter((f) => f.partId !== 'part-motor').map((f) => f.actualRepairMinutes ?? 0).filter(Boolean),
-  );
+  const motorMins = data
+    .filter((f) => f.partId === 'part-motor')
+    .map((f) => f.actualRepairMinutes ?? 0)
+    .filter(Boolean);
+  const otherMins = data
+    .filter((f) => f.partId !== 'part-motor')
+    .map((f) => f.actualRepairMinutes ?? 0)
+    .filter(Boolean);
+  const motorAvg = avg(motorMins);
+  const otherAvg = avg(otherMins);
 
   if (!hydrated) return <LoadingState />;
 
   const setPeriod = (period: ReportFilter['period']) => {
-    const end = new Date('2026-08-27T23:59:59');
+    const end = new Date();
     const days = period === 'weekly' ? 7 : 30;
     setFilter((f) => ({
       ...f,
@@ -129,7 +136,8 @@ export function ReportsPage() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Raporlar ve hata analizi</h2>
-      <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-3 shadow-card">
+      <p className="text-sm text-navy-600">Demo verileri · {format(new Date(), 'd MMMM yyyy', { locale: tr })}</p>
+      <div className="flex min-w-0 flex-wrap gap-2 rounded-2xl bg-white p-3 shadow-card">
         <select
           className="rounded-xl border px-3 py-2"
           value={filter.period}
@@ -252,38 +260,66 @@ export function ReportsPage() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard title="Ort. müdahale süresi" value={`${avgIntervention} dk`} icon={Timer} />
-        <KpiCard title="Ort. çözüm süresi" value={`${avgSolve} dk`} icon={Clock} tone="green" />
+        <KpiCard
+          title="Ort. müdahale süresi"
+          value={interventionMins.length ? `${avgIntervention} dk` : '—'}
+          icon={Timer}
+        />
+        <KpiCard
+          title="Ort. çözüm süresi"
+          value={solveMins.length ? `${avgSolve} dk` : '—'}
+          icon={Clock}
+          tone="green"
+        />
         <KpiCard title="Kritik arıza" value={critical} icon={Flame} tone="red" />
         <KpiCard title="Üretim duruşu" value={stopCount} icon={PauseCircle} tone="yellow" />
       </div>
       <p className="text-sm text-navy-700">
-        Önceki döneme göre hata değişimi:{' '}
-        <strong className={changePct > 0 ? 'text-red-700' : 'text-emerald-700'}>
-          %{changePct > 0 ? '+' : ''}
-          {changePct}
-        </strong>
+        {prev.length === 0
+          ? data.length === 0
+            ? 'Seçilen aralıkta karşılaştırılacak kayıt yok.'
+            : `Bu dönemde ${data.length} kayıt var. Önceki dönemde karşılaştırma için yeterli veri yok.`
+          : prev.length < 5 && Math.abs(changePct) > 80
+            ? `Bu dönemde ${data.length} kayıt, önceki dönemde ${prev.length} kayıt.`
+            : (
+              <>
+                Önceki döneme göre kayıt sayısı:{' '}
+                <strong className={changePct > 0 ? 'text-red-700' : 'text-emerald-700'}>
+                  %{changePct > 0 ? '+' : ''}
+                  {changePct}
+                </strong>
+              </>
+            )}
       </p>
 
       <article className="rounded-2xl bg-navy-900 p-4 text-white shadow-card">
         <h3 className="font-bold text-brand-yellow">Yönetici özeti</h3>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-          <li>
-            Bu dönemde en fazla arıza {topSection?.name ?? 'üretim'} bölgesinde görülmüştür (
-            {topSection?.count ?? 0} kayıt).
-          </li>
-          <li>
-            Sensör kaynaklı arızalar önceki döneme göre %{sensorPct > 0 ? '+' : ''}
-            {sensorPct} değişmiştir.
-          </li>
-          <li>
-            Motor arızalarının ortalama çözüm süresi ({motorAvg || '—'} dk) diğer arıza türlerinden (
-            {otherAvg || '—'} dk) {motorAvg >= otherAvg ? 'yüksektir' : 'düşüktür'}.
-          </li>
+          {data.length === 0 ? (
+            <li>Seçilen filtrelerde kayıt yok. Özet üretilemedi.</li>
+          ) : (
+            <>
+              <li>
+                {topSection && topSection.count > 0
+                  ? `En fazla arıza ${topSection.name} bölgesinde görüldü (${topSection.count} kayıt).`
+                  : 'Bölüm bazında öne çıkan bir yoğunluk yok.'}
+              </li>
+              <li>
+                {sensorPrev === 0
+                  ? `Sensör kaynaklı kayıt bu dönemde ${sensorNow} adet. Önceki dönemde karşılaştırılacak sensör kaydı yok.`
+                  : `Sensör kaynaklı kayıtlar ${sensorNow} adet (önceki dönem ${sensorPrev}).`}
+              </li>
+              <li>
+                {motorMins.length === 0 || otherMins.length === 0
+                  ? 'Motor ve diğer arızalar için ortalama çözüm süresi karşılaştırması yeterli veri olmadığından gösterilmiyor.'
+                  : `Motor arızalarının ortalama çözüm süresi ${motorAvg} dk, diğer arızalar ${otherAvg} dk.`}
+              </li>
+            </>
+          )}
         </ul>
       </article>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-2">
         <section className="rounded-2xl bg-white p-4 shadow-card">
           <h3 className="font-semibold">Günlere göre hata sayısı</h3>
           <div className="h-64">

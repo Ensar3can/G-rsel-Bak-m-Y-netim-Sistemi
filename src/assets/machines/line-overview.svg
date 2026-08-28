@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220" role="img" aria-label="Uc bolumlu uretim hatti genel gorunum">
+  <rect width="960" height="220" fill="#0B1220"/>
+  <text x="24" y="28" fill="#F5C518" font-size="14" font-family="Segoe UI" font-weight="700">URETIM HATTI · 3 BOLUM</text>
+  <rect x="24" y="48" width="280" height="140" rx="12" fill="#1A2F54" stroke="#F5C518"/>
+  <text x="164" y="122" text-anchor="middle" fill="#fff" font-size="16" font-family="Segoe UI">1 Giris</text>
+  <rect x="340" y="48" width="280" height="140" rx="12" fill="#25406E" stroke="#F5C518"/>
+  <text x="480" y="122" text-anchor="middle" fill="#fff" font-size="16" font-family="Segoe UI">2 Uretim</text>
+  <rect x="656" y="48" width="280" height="140" rx="12" fill="#12203A" stroke="#C5D2E8"/>
+  <text x="796" y="122" text-anchor="middle" fill="#fff" font-size="16" font-family="Segoe UI">3 Cikis</text>
+  <rect x="24" y="178" width="912" height="10" rx="4" fill="#6B86B0"/>
+</svg>

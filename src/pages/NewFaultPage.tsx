@@ -1,3 +1,4 @@
+import { MACHINE_IMAGE_KEYS } from '@/data/machineAssets';
 import { MACHINE_LINES, MACHINE_PARTS } from '@/data/catalog';
 import { MachineLineVisual } from '@/features/machines/MachineLineVisual';
 import {
@@ -59,7 +60,7 @@ export function NewFaultPage() {
           id: `att-${Date.now()}`,
           name: next.photoName || 'saha-foto.jpg',
           kind: 'photo',
-          url: next.photoUrl || '/assets/machines/photo-placeholder.svg',
+          url: next.photoUrl || MACHINE_IMAGE_KEYS.photoPlaceholder,
           createdAt: occurred,
         },
       ],
@@ -80,12 +81,12 @@ export function NewFaultPage() {
     <div className="space-y-4">
       <div>
         <h2 className="text-2xl font-bold text-navy-900">Yeni arıza bildir</h2>
-        <p className="text-navy-600">Önce hattı, ardından görsel üzerindeki bölümü ve parçayı seçin.</p>
+        <p className="text-navy-600">Önce hattı seçin, ardından şemadaki bölüme ve parçaya dokunun.</p>
       </div>
       <label className="block text-sm font-medium">
         Makine hattı
         <select
-          className="mt-1 w-full max-w-md rounded-xl border border-navy-200 bg-white px-3 py-3 text-base"
+          className="mt-1 min-h-[44px] w-full max-w-md rounded-xl border border-navy-200 bg-white px-3 py-3 text-base"
           value={lineId}
           onChange={(e) => {
             setLineId(e.target.value);

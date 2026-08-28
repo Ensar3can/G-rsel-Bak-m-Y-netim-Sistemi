@@ -1,2 +1,2 @@
-/** Statik görseller `public/assets` altındadır; yollar `data/machineAssets.ts` üzerinden yönetilir. */
+/** Makine şemaları `src/assets/machines` altında Vite ile içe aktarılır. */
 export {};

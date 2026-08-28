@@ -29,39 +29,39 @@ export function AppLayout() {
   const items = nav.filter((n) => n.roles.includes(currentUser.role));
 
   return (
-    <div className="min-h-screen bg-navy-100">
+    <div className="min-h-screen overflow-x-hidden bg-navy-100">
       <header className="sticky top-0 z-30 bg-navy-900 text-white shadow">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-yellow sm:text-base">
+        <div className="mx-auto max-w-7xl px-3 py-3 sm:px-4">
+          <div className="flex items-center justify-between gap-2">
+            <p className="min-w-0 text-sm font-semibold uppercase tracking-[0.18em] text-brand-yellow sm:text-base">
               Goodyear
             </p>
-            <h1 className="truncate text-xs font-medium leading-tight text-white sm:text-sm">
-              Görsel Bakım ve Arıza Yönetim Sistemi
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-sm">
-              <span className="hidden sm:inline text-navy-200">Rol</span>
-              <select
-                className="rounded-xl bg-navy-800 px-3 py-2 text-sm font-medium"
-                value={currentUser.role}
-                aria-label="Aktif rolü değiştir"
-                onChange={(e) => setRole(e.target.value as Role)}
-              >
-                {USERS.filter((u, i, arr) => arr.findIndex((x) => x.role === u.role) === i).map((u) => (
-                  <option key={u.role} value={u.role}>
-                    {ROLE_LABELS[u.role]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className="hidden text-right text-xs sm:block">
-              <p className="font-semibold">{currentUser.name}</p>
-              <p className="text-navy-300">{currentUser.shift}</p>
+            <div className="flex shrink-0 items-center gap-2">
+              <label className="flex items-center gap-2 text-sm">
+                <span className="hidden text-navy-200 sm:inline">Rol</span>
+                <select
+                  className="max-w-[11rem] rounded-xl bg-navy-800 px-2 py-2 text-sm font-medium sm:max-w-none sm:px-3"
+                  value={currentUser.role}
+                  aria-label="Aktif rolü değiştir"
+                  onChange={(e) => setRole(e.target.value as Role)}
+                >
+                  {USERS.filter((u, i, arr) => arr.findIndex((x) => x.role === u.role) === i).map((u) => (
+                    <option key={u.role} value={u.role}>
+                      {ROLE_LABELS[u.role]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="hidden text-right text-xs sm:block">
+                <p className="font-semibold">{currentUser.name}</p>
+                <p className="text-navy-300">{currentUser.shift}</p>
+              </div>
+              <NotificationBell />
             </div>
-            <NotificationBell />
           </div>
+          <h1 className="mt-1 text-[11px] font-medium leading-snug text-navy-200 sm:text-sm sm:text-white">
+            Görsel Bakım ve Arıza Yönetim Sistemi
+          </h1>
         </div>
         <nav className="border-t border-white/10 bg-navy-800" aria-label="Ana menü">
           <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-2 py-2">
@@ -87,7 +87,7 @@ export function AppLayout() {
           </div>
         </nav>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-6">
+      <main className="mx-auto min-w-0 max-w-7xl px-3 py-4 sm:px-4 sm:py-6">
         <Outlet />
       </main>
       <ToastViewport />

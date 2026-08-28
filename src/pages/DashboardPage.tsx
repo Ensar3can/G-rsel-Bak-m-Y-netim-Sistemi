@@ -30,7 +30,8 @@ export function DashboardPage() {
 
   const open = faults.filter(isOpen);
   const critical = open.filter((f) => f.priority === 'critical');
-  const today = new Date('2026-08-27T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const openedToday = faults.filter((f) => parseISO(f.createdAt) >= today);
   const waiting = faults.filter((f) => f.status === 'new' || f.status === 'waiting_parts');
   const resolved = faults.filter((f) => f.actualRepairMinutes);
@@ -43,7 +44,7 @@ export function DashboardPage() {
   const newForMaint = faults.filter((f) => f.status === 'new');
 
   const trend = Array.from({ length: 7 }).map((_, i) => {
-    const d = subDays(new Date('2026-08-27'), 6 - i);
+    const d = subDays(new Date(), 6 - i);
     const key = format(d, 'yyyy-MM-dd');
     return {
       day: format(d, 'EEE', { locale: tr }),
@@ -55,7 +56,9 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-navy-900">Ana kontrol paneli</h2>
-        <p className="text-navy-600">Operasyon özeti · 27 Ağustos 2026</p>
+        <p className="text-navy-600">
+          Demo verileri · {format(new Date(), 'd MMMM yyyy', { locale: tr })}
+        </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -66,7 +69,7 @@ export function DashboardPage() {
           <KpiCard title="Çözülmeyi bekleyen" value={waiting.length} icon={Clock3} />
         )}
         {(role === 'manager' || role === 'admin' || role === 'maintenance') && (
-          <KpiCard title="Ort. müdahale" value={`${avgMin} dk`} icon={Timer} tone="green" />
+          <KpiCard title="Ort. müdahale" value={resolved.length ? `${avgMin} dk` : '—'} icon={Timer} tone="green" />
         )}
         {role === 'operator' && (
           <KpiCard

@@ -18,11 +18,11 @@ const tones = {
 
 export function KpiCard({ title, value, hint, icon: Icon, tone = 'navy' }: Props) {
   return (
-    <article className={cn('rounded-2xl p-4 shadow-card min-h-[112px]', tones[tone])}>
+    <article className={cn('min-w-0 rounded-2xl p-4 shadow-card min-h-[112px]', tones[tone])}>
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm opacity-80">{title}</p>
-          <p className="mt-1 text-3xl font-bold tracking-tight">{value}</p>
+          <p className="mt-1 break-words text-2xl font-bold tracking-tight sm:text-3xl">{value}</p>
           {hint ? <p className="mt-1 text-xs opacity-80">{hint}</p> : null}
         </div>
         <span className="rounded-xl bg-white/15 p-2" aria-hidden>

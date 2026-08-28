@@ -1,9 +1,11 @@
 import { PriorityBadge, StatusBadge } from '@/components/ui/Badges';
 import { EmptyState, LoadingState } from '@/components/ui/States';
 import { CATEGORY_LABELS, SPARE_PARTS, STATUS_LABELS } from '@/data/catalog';
-import { MACHINE_IMAGE_KEYS } from '@/data/machineAssets';
 import { AiRecommendationPanel } from '@/features/ai/AiRecommendationPanel';
+import { MachineImage, SafeImg } from '@/features/machines/MachineImage';
+import { FaultWorkPanel } from '@/features/maintenance/FaultWorkPanel';
 import { useAppStore } from '@/store/appStore';
+import type { MachineImageKey } from '@/data/machineAssets';
 import { formatDateTime } from '@/utils/format';
 import { partById, sectionById, userById } from '@/utils/lookups';
 import { Link, useParams } from 'react-router-dom';
@@ -12,6 +14,7 @@ export function FaultDetailPage() {
   const { id } = useParams();
   const hydrated = useAppStore((s) => s.hydrated);
   const faults = useAppStore((s) => s.faults);
+  const role = useAppStore((s) => s.currentUser.role);
   const fault = faults.find((f) => f.id === id);
 
   if (!hydrated) return <LoadingState />;
@@ -21,9 +24,8 @@ export function FaultDetailPage() {
   const similar = faults.filter(
     (f) => f.id !== fault.id && (f.partId === fault.partId || f.category === fault.category),
   );
-  const img = section
-    ? MACHINE_IMAGE_KEYS[section.imageKey as keyof typeof MACHINE_IMAGE_KEYS]
-    : MACHINE_IMAGE_KEYS.lineOverview;
+  const imageKey = (section?.imageKey ?? 'lineOverview') as MachineImageKey;
+  const canWork = role === 'maintenance' || role === 'admin';
 
   return (
     <div className="space-y-4">
@@ -70,7 +72,11 @@ export function FaultDetailPage() {
         <article className="rounded-2xl bg-navy-900 p-4 text-white shadow-card">
           <h3 className="font-semibold text-brand-yellow">Seçilen makine görseli</h3>
           <div className="relative mt-2 overflow-hidden rounded-xl">
-            <img src={img} alt={section?.name ?? 'Makine'} className="h-52 w-full object-cover" />
+            <MachineImage
+              imageKey={imageKey}
+              alt={section?.name ?? 'Makine'}
+              className="h-52 w-full object-cover"
+            />
             <span
               className="absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-brand-yellow bg-red-600/70"
               style={{ left: `${fault.visualLocation.hotspotX}%`, top: `${fault.visualLocation.hotspotY}%` }}
@@ -87,7 +93,7 @@ export function FaultDetailPage() {
           <div className="mt-2 grid grid-cols-2 gap-2">
             {fault.attachments.map((a) => (
               <figure key={a.id}>
-                <img src={a.url} alt={a.name} className="h-32 w-full rounded-xl object-cover" />
+                <SafeImg src={a.url} alt={a.name} className="h-32 w-full rounded-xl object-cover" />
                 <figcaption className="text-xs text-navy-500">{a.name}</figcaption>
               </figure>
             ))}
@@ -156,6 +162,12 @@ export function FaultDetailPage() {
           </ul>
         </article>
       </section>
+
+      {canWork ? (
+        <section className="rounded-2xl bg-white p-4 shadow-card">
+          <FaultWorkPanel fault={fault} />
+        </section>
+      ) : null}
 
       <AiRecommendationPanel fault={fault} similar={similar} />
     </div>

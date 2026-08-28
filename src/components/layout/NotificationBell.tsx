@@ -14,7 +14,7 @@ export function NotificationBell() {
     <div className="relative">
       <button
         type="button"
-        className="relative rounded-xl bg-white/10 p-2 text-white hover:bg-white/20"
+        className="relative min-h-[44px] min-w-[44px] rounded-xl bg-white/10 p-2 text-white hover:bg-white/20"
         aria-label={`Bildirimler${unread ? `, ${unread} okunmamış` : ''}`}
         onClick={() => {
           setOpen((v) => !v);
@@ -29,7 +29,7 @@ export function NotificationBell() {
         ) : null}
       </button>
       {open ? (
-        <div className="absolute right-0 z-40 mt-2 w-80 rounded-2xl bg-white p-2 text-navy-900 shadow-card">
+        <div className="absolute right-0 z-40 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-white p-2 text-navy-900 shadow-card">
           <p className="px-2 py-1 text-xs font-semibold uppercase text-navy-500">Bildirimler</p>
           <ul className="max-h-80 overflow-auto">
             {notifications.slice(0, 8).map((n) => (
