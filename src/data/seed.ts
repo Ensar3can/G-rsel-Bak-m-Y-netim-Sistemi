@@ -109,16 +109,6 @@ function makeFault(index: number): FaultRecord {
   const eta = status === 'new' || status === 'closed' ? undefined : 45 + (index % 6) * 15;
   const actual =
     status === 'resolved' || status === 'closed' ? 30 + (index % 8) * 12 : undefined;
-  const costBase: Record<string, number> = {
-    'part-motor': 8500,
-    'part-belt': 2400,
-    'part-sensor': 1600,
-    'part-conveyor': 4200,
-    'part-hydraulic': 7800,
-    'part-electrical': 3100,
-    'part-cutter': 5600,
-    'part-bearing': 1200,
-  };
 
   return {
     id: `GY-2026-${String(1001 + index).padStart(4, '0')}`,
@@ -168,11 +158,9 @@ function makeFault(index: number): FaultRecord {
               id: `use-${index}`,
               sparePartId: ['sp-4', 'sp-2', 'sp-3', 'sp-6'][index % 4],
               quantity: 1 + (index % 2),
-              unitCost: [890, 3800, 1450, 2100][index % 4],
             },
           ]
         : [],
-    estimatedCost: costBase[part.id] + (stopped ? 6500 : 800),
     visualLocation: {
       lineId: line.id,
       sectionId: section.id,
@@ -207,7 +195,6 @@ export function buildSeedFaults(): FaultRecord[] {
       updatedAt: isoDaysAgo(0, 8, 40),
       occurredAt: isoDaysAgo(0, 8, 32),
       assignedTo: undefined,
-      estimatedCost: 12800,
       description:
         'Ana üretim konveyörü ani durdu. Ürün birikmesi başladı, hat kırmızı duruşta. Motor çekiyor ancak bant hareket etmiyor.',
       symptom: 'Konveyör tamamen durdu, ürün birikmesi',
@@ -227,7 +214,6 @@ export function buildSeedFaults(): FaultRecord[] {
       updatedAt: isoDaysAgo(0, 7, 25),
       occurredAt: isoDaysAgo(0, 7, 5),
       assignedTo: 'u-mt-1',
-      estimatedCost: 2100,
       description:
         'Kalite çıkış fotoceli toz nedeniyle yanlış tetikliyor. Hat kısa duruşlar yaşıyor.',
       symptom: 'Sensör aralıklı false-stop',

@@ -2,9 +2,9 @@ import { MACHINE_PARTS } from '@/data/catalog';
 import type {
   AIContext,
   AIRecommendation,
-  CostTierRecommendation,
   FaultRecord,
   IAIRecommendationService,
+  SolutionOption,
 } from '@/types';
 import { suggestedMaterialLabels } from '@/utils/suggestedMaterials';
 
@@ -28,39 +28,51 @@ export class RuleBasedAIRecommendationService implements IAIRecommendationServic
 
     const materials = suggestedMaterialLabels(fault.partId);
 
-    const economic: CostTierRecommendation = {
-      title: 'Ekonomik çözüm',
-      costLevel: 'low',
-      estimatedCost: Math.round(fault.estimatedCost * 0.35),
-      durationHint: 'Kısa vadeli (vardiya içi)',
+    const quick: SolutionOption = {
+      title: 'Hızlı Müdahale',
+      applicability: 'Belirti yeni başladıysa veya hat kısa süreli stabilize edilebiliyorsa uygundur.',
+      durationHint: `Tahmini müdahale: ${Math.max(20, Math.round(avgMinutes * 0.45))} dk (vardiya içi)`,
+      productionImpact: fault.productionStopped
+        ? 'Hat durmuş durumda; önce emniyet izolasyonu, ardından geçici çalıştırma değerlendirmesi.'
+        : 'Hız düşürülerek üretim sürdürülebilir; kalıcı onarım ertelenebilir.',
       materials: materials.slice(0, 1),
-      benefit: `${part?.name ?? 'Parça'} üzerinde temizlik, sıkma ve hizalama ile geçici stabilite.`,
+      steps: [
+        'Kilit/etiket ve enerji kesimini doğrula',
+        `${part?.name ?? 'Ünite'} görsel ve ısınma kontrolü yap`,
+        'Temizlik, sıkma ve hizalama dene',
+      ],
       riskOrLimitation:
         'Kök neden giderilmezse 7–14 gün içinde tekrarlama olasılığı yüksektir. Üretim hızı sınırlanmalıdır.',
     };
 
-    const balanced: CostTierRecommendation = {
-      title: 'Dengeli çözüm',
-      costLevel: 'medium',
-      estimatedCost: Math.round(fault.estimatedCost * 0.7),
-      durationHint: 'Orta vadeli (1–2 vardiya)',
+    const standard: SolutionOption = {
+      title: 'Standart Çözüm',
+      applicability: 'Aşınma doğrulandıysa ve yedek parça stokta varsa tercih edilir.',
+      durationHint: `Tahmini müdahale: ${avgMinutes} dk (1–2 vardiya)`,
+      productionImpact: 'Kısa planlı duruş ile hat normale döner; kalibrasyon sonrası izleme gerekir.',
       materials,
-      benefit: `Aşınan elemanın değişimi ve kalibrasyon. Benzer kayıtlarda ortalama müdahale ${avgMinutes} dk.`,
+      steps: [
+        'Aşınan elemanı sök ve uygun yedekle değiştir',
+        'Sensör/enkoder kalibrasyonunu doğrula',
+        'Deneme çalıştırması ve titreşim kontrolü yap',
+      ],
       riskOrLimitation: 'Stok yoksa malzeme bekleme süresi üretim kaybını uzatabilir.',
     };
 
-    const guaranteed: CostTierRecommendation = {
-      title: 'Kesin / garantili çözüm',
-      costLevel: 'high',
-      estimatedCost: Math.round(fault.estimatedCost * 1.45),
-      durationHint: 'Kalıcı (planlı duruş veya tam değişim)',
-      materials: [...materials, 'Hizalama kiti', 'Yağlama ve sızdırmazlık seti'],
-      benefit:
-        'Ünite revizyonu veya OEM parça değişimi ile tekrarlama riski düşer, hat kararlılığı artar.',
-      riskOrLimitation: 'Yüksek maliyet ve daha uzun duruş penceresi gerektirir.',
+    const comprehensive: SolutionOption = {
+      title: 'Kapsamlı Çözüm',
+      applicability: 'Tekrarlayan arıza, kritik duruş veya OEM revizyon gerektiğinde uygulanır.',
+      durationHint: 'Tahmini müdahale: 90–180 dk (planlı duruş veya tam değişim)',
       productionImpact: fault.productionStopped
-        ? 'Hat zaten durmuş; tam değişim için ek 90–180 dk duruş planlanmalıdır.'
-        : 'Planlı duruş penceresi önerilir; canlı hatta tam değişim risklidir.',
+        ? 'Hat zaten durmuş; tam değişim için ek duruş penceresi planlanmalıdır.'
+        : 'Canlı hatta tam değişim risklidir; planlı duruş önerilir.',
+      materials: [...materials, 'Hizalama kiti', 'Yağlama ve sızdırmazlık seti'],
+      steps: [
+        'Ünite revizyonu veya OEM parça değişimini planla',
+        'Hizalama ve yağlama prosedürünü uygula',
+        'Yetkili bakım onayı ile hattı kademeli devreye al',
+      ],
+      riskOrLimitation: 'Daha uzun duruş penceresi ve daha geniş saha hazırlığı gerektirir.',
     };
 
     const possibleCauses = [
@@ -90,12 +102,12 @@ export class RuleBasedAIRecommendationService implements IAIRecommendationServic
           ? `Kapanan benzer kayıtlarda ortalama çözüm süresi ${avgMinutes} dakikadır.`
           : 'Kapanmış benzer kayıt az; saha doğrulaması kritik.',
         fault.sectionId === 'sec-process'
-          ? 'Ana üretim bölümündeki duruşlar maliyet etkisini hızla yükseltir.'
+          ? 'Ana üretim bölümündeki duruşlar diğer bölümlere göre daha hızlı yayılır.'
           : 'Giriş/çıkış bölümü arızaları genellikle daha kısa izolasyon süresi ister.',
       ],
-      economic,
-      balanced,
-      guaranteed,
+      quick,
+      standard,
+      comprehensive,
       disclaimer: DISCLAIMER,
     };
   }

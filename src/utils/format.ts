@@ -9,14 +9,6 @@ export function formatTimeAgo(iso: string): string {
   return formatDistanceToNow(parseISO(iso), { addSuffix: true, locale: tr });
 }
 
-export function formatMoney(value: number): string {
-  return new Intl.NumberFormat('tr-TR', {
-    style: 'currency',
-    currency: 'TRY',
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
 export function cn(...parts: Array<string | false | undefined | null>): string {
   return parts.filter(Boolean).join(' ');
 }

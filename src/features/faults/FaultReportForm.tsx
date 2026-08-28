@@ -223,14 +223,14 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
           />
         </span>
         <span className="text-xs text-navy-500">
-          {values.photoName || 'Dosya seçilmezse demo saha görseli eklenir.'}
+          {values.photoName || 'Dosya seçilmezse örnek saha görseli eklenir.'}
         </span>
       </label>
       <div className="rounded-xl border border-dashed border-navy-300 p-3 text-sm text-navy-600">
         <p className="flex items-center gap-2 font-medium text-navy-800">
           <Mic size={16} /> Sesli not (yakında)
         </p>
-        <p className="mt-1 text-xs">Kayıt arayüzü hazır; demo sürümünde ses işleme bağlı değildir.</p>
+        <p className="mt-1 text-xs">Kayıt arayüzü hazır; ses işleme bu sürümde bağlı değildir.</p>
       </div>
       <label className="text-sm font-medium">
         Arıza oluşma zamanı

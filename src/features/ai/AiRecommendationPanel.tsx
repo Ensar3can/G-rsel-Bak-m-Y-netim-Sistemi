@@ -1,7 +1,6 @@
 import { CATEGORY_LABELS, MACHINE_LINES, SPARE_PARTS } from '@/data/catalog';
 import { aiRecommendationService } from '@/services/aiRecommendationService';
 import type { AIRecommendation, FaultRecord } from '@/types';
-import { formatMoney } from '@/utils/format';
 import { AlertTriangle, CheckSquare, Package, ShieldAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { sectionById } from '@/utils/lookups';
@@ -41,7 +40,7 @@ export function AiRecommendationPanel({
     return <div className="rounded-2xl bg-white p-4 shadow-card">Yapay zekâ önerileri hazırlanıyor…</div>;
   }
 
-  const tiers = [data.economic, data.balanced, data.guaranteed];
+  const tiers = [data.quick, data.standard, data.comprehensive];
   const section = sectionById(fault.sectionId);
 
   return (
@@ -71,23 +70,28 @@ export function AiRecommendationPanel({
       <div className="mt-4 grid gap-3 lg:grid-cols-3">
         {tiers.map((tier) => (
           <article key={tier.title} className="rounded-2xl border border-navy-100 p-3">
-            <p className="text-xs font-semibold uppercase text-navy-500">
-              {tier.costLevel === 'low' ? 'Düşük maliyet' : tier.costLevel === 'medium' ? 'Orta maliyet' : 'Yüksek maliyet'}
-            </p>
-            <h3 className="font-bold">{tier.title}</h3>
-            <p className="text-sm text-navy-600">{tier.durationHint}</p>
-            <p className="mt-2 text-lg font-bold text-navy-900">{formatMoney(tier.estimatedCost)}</p>
-            <p className="mt-2 text-sm">{tier.benefit}</p>
-            <ul className="mt-2 list-disc pl-4 text-sm text-navy-700">
+            <h3 className="font-bold text-navy-900">{tier.title}</h3>
+            <p className="mt-1 text-sm text-navy-700">{tier.applicability}</p>
+            <p className="mt-2 text-sm font-semibold text-navy-800">{tier.durationHint}</p>
+            {tier.productionImpact ? (
+              <p className="mt-2 text-sm text-navy-600">Üretime olası etki: {tier.productionImpact}</p>
+            ) : null}
+            <p className="mt-3 text-xs font-semibold uppercase text-navy-500">Kontrol adımları</p>
+            <ol className="mt-1 list-decimal pl-4 text-sm text-navy-700">
+              {tier.steps.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ol>
+            <p className="mt-3 text-xs font-semibold uppercase text-navy-500">Muhtemel yedek parçalar</p>
+            <ul className="mt-1 list-disc pl-4 text-sm text-navy-700">
               {tier.materials.map((m) => (
                 <li key={m}>{m}</li>
               ))}
             </ul>
-            <p className="mt-2 text-xs text-red-700">
+            <p className="mt-2 text-xs text-red-800">
               <AlertTriangle size={12} className="mr-1 inline" />
-              {tier.riskOrLimitation}
+              Risk: {tier.riskOrLimitation}
             </p>
-            {tier.productionImpact ? <p className="mt-1 text-xs text-navy-600">{tier.productionImpact}</p> : null}
           </article>
         ))}
       </div>

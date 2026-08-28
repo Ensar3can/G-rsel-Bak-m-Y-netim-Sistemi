@@ -2,9 +2,8 @@ import { KpiCard } from '@/components/ui/KpiCard';
 import { LoadingState } from '@/components/ui/States';
 import { isOpen } from '@/services/reportService';
 import { useAppStore } from '@/store/appStore';
-import { formatMoney } from '@/utils/format';
 import { partById, sectionById } from '@/utils/lookups';
-import { AlertTriangle, Banknote, Flame, Gauge } from 'lucide-react';
+import { AlertTriangle, Flame, Gauge } from 'lucide-react';
 import { parseISO, subDays } from 'date-fns';
 import { Link } from 'react-router-dom';
 
@@ -17,7 +16,6 @@ export function ManagementPage() {
   const since = subDays(new Date('2026-08-27'), 30);
   const last30 = faults.filter((f) => parseISO(f.createdAt) >= since);
   const criticalTrend = last30.filter((f) => f.priority === 'critical').length;
-  const cost = last30.reduce((s, f) => s + f.estimatedCost, 0);
   const stopRisk = last30.filter((f) => f.productionStopped).length;
   const sectionCounts = new Map<string, number>();
   last30.forEach((f) => sectionCounts.set(f.sectionId, (sectionCounts.get(f.sectionId) ?? 0) + 1));
@@ -39,10 +37,9 @@ export function ManagementPage() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Yönetim karar destek ekranı</h2>
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <KpiCard title="Toplam açık arıza" value={open.length} icon={AlertTriangle} />
         <KpiCard title="Kritik arıza trendi (30g)" value={criticalTrend} icon={Flame} tone="red" />
-        <KpiCard title="Tahmini bakım maliyeti" value={formatMoney(cost)} icon={Banknote} tone="yellow" />
         <KpiCard title="Üretim kaybı riski" value={`${stopRisk} duruş`} icon={Gauge} />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">

@@ -65,7 +65,6 @@ export function NewFaultPage() {
       ],
       maintenanceNotes: [],
       spareParts: [],
-      estimatedCost: next.productionStopped === 'yes' ? 9000 : 2800,
       visualLocation: {
         lineId,
         sectionId: next.sectionId,

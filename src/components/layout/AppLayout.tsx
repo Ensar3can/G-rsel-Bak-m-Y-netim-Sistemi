@@ -9,7 +9,6 @@ import {
   LayoutDashboard,
   PlusCircle,
   Settings,
-  Shield,
   Wrench,
 } from 'lucide-react';
 import { NavLink, Outlet } from 'react-router-dom';
@@ -33,16 +32,13 @@ export function AppLayout() {
     <div className="min-h-screen bg-navy-100">
       <header className="sticky top-0 z-30 bg-navy-900 text-white shadow">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-yellow text-navy-900">
-              <Shield size={20} aria-hidden />
-            </span>
-            <div>
-              <p className="text-xs uppercase tracking-wider text-brand-yellow">Goodyear · Demo</p>
-              <h1 className="text-sm font-bold leading-tight sm:text-base">
-                Görsel Bakım ve Arıza Yönetim Sistemi
-              </h1>
-            </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-yellow sm:text-base">
+              Goodyear
+            </p>
+            <h1 className="truncate text-xs font-medium leading-tight text-white sm:text-sm">
+              Görsel Bakım ve Arıza Yönetim Sistemi
+            </h1>
           </div>
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 text-sm">

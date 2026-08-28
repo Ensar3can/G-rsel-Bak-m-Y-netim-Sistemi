@@ -18,10 +18,10 @@ const COLUMNS: FaultStatus[] = [
 ];
 
 const cardTone: Record<FaultRecord['priority'], string> = {
-  critical: 'border-l-4 border-l-red-600 bg-red-50',
-  high: 'border-l-4 border-l-orange-500 bg-orange-50',
-  medium: 'border-l-4 border-l-yellow-400 bg-yellow-50',
-  low: 'border-l-4 border-l-emerald-500 bg-emerald-50',
+  critical: 'border border-red-300 border-l-[6px] border-l-red-700 bg-white ring-1 ring-red-100',
+  high: 'border border-orange-200 border-l-[6px] border-l-orange-500 bg-white',
+  medium: 'border border-yellow-200 border-l-[6px] border-l-yellow-400 bg-white',
+  low: 'border border-emerald-200 border-l-[6px] border-l-emerald-600 bg-white',
 };
 
 export function FaultWorkCard({ fault }: { fault: FaultRecord }) {
@@ -37,7 +37,10 @@ export function FaultWorkCard({ fault }: { fault: FaultRecord }) {
   const materials = suggestedMaterialLabels(fault.partId);
 
   return (
-    <article className={cn('rounded-2xl p-3 shadow-sm', cardTone[fault.priority])}>
+    <article className={cn('rounded-2xl p-4 shadow-sm', cardTone[fault.priority])}>
+      {fault.priority === 'critical' ? (
+        <p className="mb-2 text-xs font-bold uppercase tracking-wide text-red-800">Kritik arıza</p>
+      ) : null}
       <div className="flex items-start justify-between gap-2">
         <Link to={`/arizalar/${fault.id}`} className="font-bold hover:underline">
           {fault.id}
@@ -69,14 +72,14 @@ export function FaultWorkCard({ fault }: { fault: FaultRecord }) {
         {fault.status === 'new' && (
           <button
             type="button"
-            className="min-h-[40px] rounded-xl bg-navy-900 px-3 text-sm font-semibold text-white"
+            className="min-h-[44px] rounded-xl bg-navy-900 px-3 text-sm font-semibold text-white"
             onClick={() => void claim(fault.id)}
           >
             Üzerime Al
           </button>
         )}
         <select
-          className="rounded-xl border px-2 py-1 text-xs"
+          className="min-h-[44px] rounded-xl border px-2 py-2 text-sm"
           aria-label="Durum değiştir"
           value={fault.status}
           onChange={(e) => void updateFault(fault.id, { status: e.target.value as FaultStatus })}
@@ -147,7 +150,7 @@ export function FaultWorkCard({ fault }: { fault: FaultRecord }) {
             void updateFault(fault.id, {
               spareParts: [
                 ...fault.spareParts,
-                { id: `use-${Date.now()}`, sparePartId: sp.id, quantity: 1, unitCost: sp.unitCost },
+                { id: `use-${Date.now()}`, sparePartId: sp.id, quantity: 1 },
               ],
             });
             pushToast('Malzeme eklendi.');
@@ -177,7 +180,7 @@ export function FaultWorkCard({ fault }: { fault: FaultRecord }) {
       </div>
       <button
         type="button"
-        className="mt-2 w-full rounded-xl border border-navy-800 py-1 text-xs font-semibold"
+        className="mt-2 min-h-[44px] w-full rounded-xl border border-navy-800 py-2 text-sm font-semibold"
         onClick={() =>
           void updateFault(fault.id, {
             status: 'closed',

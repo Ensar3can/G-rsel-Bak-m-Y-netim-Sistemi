@@ -59,7 +59,7 @@ export interface Attachment {
   id: string;
   name: string;
   kind: 'photo' | 'audio' | 'document';
-  /** Demo: data URL veya SVG placeholder */
+  /** data URL veya SVG yer tutucu */
   url: string;
   createdAt: string;
 }
@@ -75,7 +75,6 @@ export interface SparePartUsage {
   id: string;
   sparePartId: string;
   quantity: number;
-  unitCost: number;
 }
 
 export interface StatusChange {
@@ -117,7 +116,6 @@ export interface FaultRecord {
   actualRepairMinutes?: number;
   estimatedCompletionAt?: string;
   spareParts: SparePartUsage[];
-  estimatedCost: number;
   visualLocation: VisualLocation;
   statusHistory: StatusChange[];
   resolutionSummary?: string;
@@ -138,19 +136,18 @@ export interface SparePart {
   sku: string;
   name: string;
   category: string;
-  unitCost: number;
   stock: number;
 }
 
-export interface CostTierRecommendation {
+/** Karar destek çözüm katmanı. */
+export interface SolutionOption {
   title: string;
-  costLevel: 'low' | 'medium' | 'high';
-  estimatedCost: number;
+  applicability: string;
   durationHint: string;
-  materials: string[];
-  benefit: string;
-  riskOrLimitation: string;
   productionImpact?: string;
+  materials: string[];
+  steps: string[];
+  riskOrLimitation: string;
 }
 
 export interface AIRecommendation {
@@ -161,9 +158,9 @@ export interface AIRecommendation {
   checklist: string[];
   suggestedParts: string[];
   similarFaultInsights: string[];
-  economic: CostTierRecommendation;
-  balanced: CostTierRecommendation;
-  guaranteed: CostTierRecommendation;
+  quick: SolutionOption;
+  standard: SolutionOption;
+  comprehensive: SolutionOption;
   disclaimer: string;
 }
 

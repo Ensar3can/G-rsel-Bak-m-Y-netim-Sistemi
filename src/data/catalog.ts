@@ -88,14 +88,14 @@ export const MACHINE_PARTS: MachinePart[] = [
 ];
 
 export const SPARE_PARTS: SparePart[] = [
-  { id: 'sp-1', sku: 'GY-MTR-18', name: 'Sürücü motor 18.5 kW', category: 'Motor', unitCost: 42000, stock: 2 },
-  { id: 'sp-2', sku: 'GY-BELT-2100', name: 'Konveyör kayışı 2100 mm', category: 'Kayış', unitCost: 3800, stock: 6 },
-  { id: 'sp-3', sku: 'GY-SNS-PX', name: 'Fotoelektrik sensör', category: 'Sensör', unitCost: 1450, stock: 14 },
-  { id: 'sp-4', sku: 'GY-BRG-6310', name: 'Rulman 6310-2RS', category: 'Rulman', unitCost: 890, stock: 20 },
-  { id: 'sp-5', sku: 'GY-HYD-VLV', name: 'Hidrolik valf grubu', category: 'Hidrolik', unitCost: 9600, stock: 3 },
-  { id: 'sp-6', sku: 'GY-CNT-40', name: 'Kontaktör 40A', category: 'Elektrik', unitCost: 2100, stock: 8 },
-  { id: 'sp-7', sku: 'GY-BLD-C', name: 'Kesici bıçak seti', category: 'Kesici', unitCost: 5400, stock: 4 },
-  { id: 'sp-8', sku: 'GY-ENC-ABS', name: 'Mutlak enkoder', category: 'Otomasyon', unitCost: 6700, stock: 5 },
+  { id: 'sp-1', sku: 'GY-MTR-18', name: 'Sürücü motor 18.5 kW', category: 'Motor', stock: 2 },
+  { id: 'sp-2', sku: 'GY-BELT-2100', name: 'Konveyör kayışı 2100 mm', category: 'Kayış', stock: 6 },
+  { id: 'sp-3', sku: 'GY-SNS-PX', name: 'Fotoelektrik sensör', category: 'Sensör', stock: 14 },
+  { id: 'sp-4', sku: 'GY-BRG-6310', name: 'Rulman 6310-2RS', category: 'Rulman', stock: 20 },
+  { id: 'sp-5', sku: 'GY-HYD-VLV', name: 'Hidrolik valf grubu', category: 'Hidrolik', stock: 3 },
+  { id: 'sp-6', sku: 'GY-CNT-40', name: 'Kontaktör 40A', category: 'Elektrik', stock: 8 },
+  { id: 'sp-7', sku: 'GY-BLD-C', name: 'Kesici bıçak seti', category: 'Kesici', stock: 4 },
+  { id: 'sp-8', sku: 'GY-ENC-ABS', name: 'Mutlak enkoder', category: 'Otomasyon', stock: 5 },
 ];
 
 export const CATEGORY_LABELS: Record<string, string> = {

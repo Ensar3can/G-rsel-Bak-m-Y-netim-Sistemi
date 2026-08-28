@@ -4,7 +4,7 @@ import { CATEGORY_LABELS, SPARE_PARTS, STATUS_LABELS } from '@/data/catalog';
 import { MACHINE_IMAGE_KEYS } from '@/data/machineAssets';
 import { AiRecommendationPanel } from '@/features/ai/AiRecommendationPanel';
 import { useAppStore } from '@/store/appStore';
-import { formatDateTime, formatMoney } from '@/utils/format';
+import { formatDateTime } from '@/utils/format';
 import { partById, sectionById, userById } from '@/utils/lookups';
 import { Link, useParams } from 'react-router-dom';
 
@@ -62,10 +62,6 @@ export function FaultDetailPage() {
             <div>
               <dt className="text-navy-500">Duruş</dt>
               <dd>{fault.productionStopped ? 'Evet' : 'Hayır'}</dd>
-            </div>
-            <div>
-              <dt className="text-navy-500">Tahmini maliyet</dt>
-              <dd>{formatMoney(fault.estimatedCost)}</dd>
             </div>
           </dl>
           <p className="mt-3 text-sm">{fault.description}</p>
@@ -136,7 +132,7 @@ export function FaultDetailPage() {
               const sp = SPARE_PARTS.find((p) => p.id === s.sparePartId);
               return (
                 <li key={s.id}>
-                  {sp?.name} × {s.quantity} · {formatMoney(s.unitCost * s.quantity)}
+                  {sp?.name} × {s.quantity}
                 </li>
               );
             })}

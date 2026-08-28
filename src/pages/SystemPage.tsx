@@ -7,7 +7,7 @@ export function SystemPage() {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">Sistem yönetimi</h2>
-      <p className="text-navy-600">Demo kullanıcılar, hat kataloğu ve yerel veri sıfırlama.</p>
+      <p className="text-navy-600">Kullanıcılar, hat kataloğu ve yerel veri sıfırlama.</p>
       <section className="rounded-2xl bg-white p-4 shadow-card">
         <h3 className="font-semibold">Kullanıcılar</h3>
         <table className="mt-2 w-full text-sm">

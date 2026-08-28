@@ -4,9 +4,9 @@ import { LoadingState } from '@/components/ui/States';
 import { CATEGORY_LABELS } from '@/data/catalog';
 import { isOpen } from '@/services/reportService';
 import { useAppStore } from '@/store/appStore';
-import { formatDateTime, formatMoney, formatTimeAgo } from '@/utils/format';
+import { formatDateTime, formatTimeAgo } from '@/utils/format';
 import { partById, sectionById, userById } from '@/utils/lookups';
-import { AlertTriangle, Banknote, Clock3, Flame, Inbox, Timer } from 'lucide-react';
+import { AlertTriangle, Clock3, Flame, Inbox, Timer } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   CartesianGrid,
@@ -55,7 +55,7 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-navy-900">Ana kontrol paneli</h2>
-        <p className="text-navy-600">Canlı demo verileri · 27 Ağustos 2026</p>
+        <p className="text-navy-600">Operasyon özeti · 27 Ağustos 2026</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
@@ -73,14 +73,6 @@ export function DashboardPage() {
             title="Sizin kayıtlarınız"
             value={faults.filter((f) => f.createdBy === userId).length}
             icon={Inbox}
-          />
-        )}
-        {(role === 'manager' || role === 'admin') && (
-          <KpiCard
-            title="Açık kayıt maliyeti"
-            value={formatMoney(open.reduce((s, f) => s + f.estimatedCost, 0))}
-            icon={Banknote}
-            tone="yellow"
           />
         )}
       </div>

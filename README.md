@@ -1,6 +1,6 @@
 # Görsel Bakım ve Arıza Yönetim Sistemi
 
-Goodyear fabrika ortamı için hazırlanmış **görsel hata bildirim ve bakım yönetimi** demo uygulaması. Operatörler arızayı telefonla anlatmak yerine makine bölgesini ve parçayı görsel olarak seçer; bakım ekibi kaydı anında görür; yönetim hata trendlerini ve maliyet etkisini izler.
+Goodyear fabrika ortamı için hazırlanmış **görsel hata bildirim ve bakım yönetimi** uygulaması. Operatörler arızayı telefonla anlatmak yerine makine bölgesini ve parçayı görsel olarak seçer; bakım ekibi kaydı anında görür; yönetim hata trendlerini izler.
 
 Bu sürüm tamamen tarayıcıda çalışır. Gerçek API veya veritabanı zorunlu değildir.
 
@@ -103,7 +103,7 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 | Rol | Demo kullanıcı | Ne görür? |
 | --- | --- | --- |
 | Operatör | Mehmet Yıldız | Panel, yeni arıza bildirimi, arıza detayı |
-| Bakım personeli | Hasan Korkmaz | Panel, bakım panosu (kanban/tablo), kayıt güncelleme |
+| Bakım personeli | Hasan Korkmaz | Panel, bakım panosu (dikey kanban), kayıt güncelleme |
 | Yönetici | Selim Arslan | Panel, raporlar, yönetim karar destek ekranı |
 | Sistem yöneticisi | Deniz Aksoy | Tüm ekranlar + sistem / veri sıfırlama |
 
@@ -111,11 +111,11 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 
 1. **Kontrol paneli** — Aktif/kritik kayıtlar, bugün açılanlar, trend grafiği, son kayıtlar.
 2. **Yeni arıza bildir** — Hat seçimi, üç bölümlü makine şeması, hotspot, yapılandırılmış form. Kayıt `Yeni` durumunda oluşur, localStorage’a yazılır, bakım listesine düşer, detay sayfasına yönlendirilir.
-3. **Bakım panosu** — Öncelik renkli kartlar, üzerine al, durum, not, malzeme, kök neden, kapatma.
+3. **Bakım panosu** — Duruma göre dikey kanban, üzerine al, not, malzeme, kök neden, kapatma.
 4. **Arıza detayı** — Görsel konum, zaman çizelgesi, notlar, malzemeler, benzer kayıtlar.
-5. **Yapay zekâ önerileri** — Ekonomik / dengeli / kesin çözüm katmanları; kural tabanlı `aiRecommendationService`. Karar destek uyarısı içerir.
+5. **Yapay zekâ önerileri** — Hızlı müdahale / standart / kapsamlı çözüm katmanları; kural tabanlı `aiRecommendationService`. Karar destek uyarısı içerir.
 6. **Raporlar** — Haftalık/aylık filtre, grafikler, KPI, yönetici özeti, PDF/Excel yakında mesajı.
-7. **Yönetim** — Açık arıza, maliyet, duruş riski, aksiyon önerileri.
+7. **Yönetim** — Açık arıza, duruş riski, aksiyon önerileri.
 8. **Bildirimler** — Sağ üst rozet; kritik kayıt, üzerine alma, kapatma vb.
 
 Makine görselleri `public/assets/machines/` altındadır. Yollar `src/data/machineAssets.ts` üzerinden yönetilir; gerçek fotoğraflar bu dosyalar değiştirilerek bağlanır.

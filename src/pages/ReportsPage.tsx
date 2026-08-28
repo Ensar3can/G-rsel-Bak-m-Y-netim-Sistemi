@@ -12,9 +12,8 @@ import {
 import { applyReportFilter, avg, previousPeriod } from '@/services/reportService';
 import { useAppStore } from '@/store/appStore';
 import type { FaultCategory, FaultPriority, FaultStatus, ReportFilter } from '@/types';
-import { formatMoney } from '@/utils/format';
 import { useAppStore as useToast } from '@/store/appStore';
-import { Banknote, Clock, Flame, Timer } from 'lucide-react';
+import { Clock, Flame, PauseCircle, Timer } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import {
   Bar,
@@ -100,7 +99,7 @@ export function ReportsPage() {
   const avgIntervention = avg(data.map((f) => f.estimatedRepairMinutes ?? 0).filter(Boolean));
   const avgSolve = avg(data.map((f) => f.actualRepairMinutes ?? 0).filter(Boolean));
   const critical = data.filter((f) => f.priority === 'critical').length;
-  const cost = data.reduce((s, f) => s + f.estimatedCost, 0);
+  const stopCount = data.filter((f) => f.productionStopped).length;
 
   const topSection = [...bySection].sort((a, b) => b.count - a.count)[0];
   const sensorNow = data.filter((f) => f.category === 'sensor').length;
@@ -256,7 +255,7 @@ export function ReportsPage() {
         <KpiCard title="Ort. müdahale süresi" value={`${avgIntervention} dk`} icon={Timer} />
         <KpiCard title="Ort. çözüm süresi" value={`${avgSolve} dk`} icon={Clock} tone="green" />
         <KpiCard title="Kritik arıza" value={critical} icon={Flame} tone="red" />
-        <KpiCard title="Tahmini bakım maliyeti" value={formatMoney(cost)} icon={Banknote} tone="yellow" />
+        <KpiCard title="Üretim duruşu" value={stopCount} icon={PauseCircle} tone="yellow" />
       </div>
       <p className="text-sm text-navy-700">
         Önceki döneme göre hata değişimi:{' '}
