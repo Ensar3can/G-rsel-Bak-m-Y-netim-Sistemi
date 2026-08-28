@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #e8eef7;
+  color: #0b1220;
+}
+
+.machine-hotspot {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.machine-hotspot:focus-visible,
+.section-card:focus-visible {
+  outline: 3px solid #f5c518;
+  outline-offset: 3px;
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Saha fotografi yer tutucu">
+  <rect width="640" height="360" fill="#1A2F54"/>
+  <rect x="40" y="40" width="560" height="280" rx="12" fill="#0B1220" stroke="#F5C518" stroke-dasharray="8 6"/>
+  <circle cx="200" cy="150" r="36" fill="#F5C518"/>
+  <polygon points="160,250 280,170 420,250 560,140 560,300 80,300" fill="#3B5A8A"/>
+  <text x="320" y="330" text-anchor="middle" fill="#C5D2E8" font-size="14" font-family="Segoe UI">Demo saha fotografi</text>
+</svg>
