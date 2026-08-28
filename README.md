@@ -110,7 +110,7 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 ## Ana ekranlar
 
 1. **Kontrol paneli** — Aktif/kritik kayıtlar, bugün açılanlar, trend grafiği, son kayıtlar.
-2. **Yeni arıza bildir** — Hat seçimi, üç bölümlü makine şeması, hotspot, yapılandırılmış form. Kayıt `Yeni` durumunda oluşur, localStorage’a yazılır, bakım listesine düşer, detay sayfasına yönlendirilir.
+2. **Yeni arıza bildir** — Dört adımlı görsel akış: bölüm fotoğrafı → parça (hotspot) → basit belirti → onay. Teknik kategori ve öncelik sistem tarafından üretilir. Kayıt `Yeni` durumunda oluşur, bakım listesine düşer.
 3. **Bakım panosu** — Duruma göre dikey kanban; özet kart ve müdahale paneli.
 4. **Arıza detayı** — Görsel konum, zaman çizelgesi, notlar, malzemeler, benzer kayıtlar.
 5. **Yapay zekâ önerileri** — Hızlı müdahale / standart / kapsamlı çözüm katmanları; kural tabanlı `aiRecommendationService`. Karar destek uyarısı içerir.
@@ -118,7 +118,20 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 7. **Yönetim** — Açık arıza, duruş riski, aksiyon önerileri.
 8. **Bildirimler** — Sağ üst rozet; kritik kayıt, üzerine alma, kapatma vb.
 
-Makine görselleri `src/assets/machines/` altındadır. Yollar `src/data/machineAssets.ts` üzerinden yönetilir.
+## Makine fotoğrafı ve hotspot ekleme
+
+Gerçek saha fotoğraflarını eklemek için bileşen kodunu değiştirmeniz gerekmez.
+
+1. Üç bölüm fotoğrafını `public/machines/` klasörüne koyun. Örnek adlar: `raw.jpg`, `process.jpg`, `quality.jpg`.
+2. `src/data/machineMapConfig.ts` dosyasında ilgili bölümün `photoPath` değerini güncelleyin, örneğin `'/machines/raw.jpg'`.
+3. Aynı dosyada hotspot listesini düzenleyin:
+   - `label`: operatörün göreceği etiket (Motor, Konveyör, vb.)
+   - `partId`: katalogdaki parça kimliği (`src/data/catalog.ts`)
+   - `x` / `y`: fotoğraf üzerindeki konum, **yüzde** (0–100)
+   - isteğe bağlı `width` / `height`: dokunma alanı yüzdesi
+   - `defaultCategory`: bakım kaydına yazılacak varsayılan hata kategorisi
+
+Fotoğraf henüz yoksa veya yol hatalıysa uygulama mevcut SVG şemayı kullanır. İnternetten rastgele makine görseli indirmeyin; yalnızca kendi saha fotoğraflarınızı ekleyin.
 
 Demo verileri tarayıcı localStorage’ında saklanır. Farklı cihazlar arasında gerçek zamanlı kayıt paylaşımı için sonraki fazda merkezi backend ve gerçek zamanlı bildirim altyapısı gerekir.
 

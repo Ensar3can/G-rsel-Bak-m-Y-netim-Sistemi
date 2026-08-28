@@ -28,3 +28,23 @@ body {
   outline: 3px solid #f5c518;
   outline-offset: 3px;
 }
+
+@keyframes section-pop {
+  0% {
+    transform: scale(0.98);
+  }
+  55% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.section-card-selected {
+  animation: section-pop 0.35s ease;
+}
+
+.hotspot-selected {
+  transform: translate(-50%, -50%) scale(1.08);
+}

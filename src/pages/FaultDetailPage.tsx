@@ -2,10 +2,9 @@ import { PriorityBadge, StatusBadge } from '@/components/ui/Badges';
 import { EmptyState, LoadingState } from '@/components/ui/States';
 import { CATEGORY_LABELS, SPARE_PARTS, STATUS_LABELS } from '@/data/catalog';
 import { AiRecommendationPanel } from '@/features/ai/AiRecommendationPanel';
-import { MachineImage, SafeImg } from '@/features/machines/MachineImage';
+import { MachineSectionPhoto, SafeImg } from '@/features/machines/MachineImage';
 import { FaultWorkPanel } from '@/features/maintenance/FaultWorkPanel';
 import { useAppStore } from '@/store/appStore';
-import type { MachineImageKey } from '@/data/machineAssets';
 import { formatDateTime } from '@/utils/format';
 import { partById, sectionById, userById } from '@/utils/lookups';
 import { Link, useParams } from 'react-router-dom';
@@ -24,7 +23,6 @@ export function FaultDetailPage() {
   const similar = faults.filter(
     (f) => f.id !== fault.id && (f.partId === fault.partId || f.category === fault.category),
   );
-  const imageKey = (section?.imageKey ?? 'lineOverview') as MachineImageKey;
   const canWork = role === 'maintenance' || role === 'admin';
 
   return (
@@ -50,6 +48,10 @@ export function FaultDetailPage() {
               <dd>{CATEGORY_LABELS[fault.category]}</dd>
             </div>
             <div>
+              <dt className="text-navy-500">Bölüm</dt>
+              <dd>{section?.name ?? fault.sectionId}</dd>
+            </div>
+            <div>
               <dt className="text-navy-500">Parça</dt>
               <dd>{partById(fault.partId)?.name}</dd>
             </div>
@@ -72,8 +74,8 @@ export function FaultDetailPage() {
         <article className="rounded-2xl bg-navy-900 p-4 text-white shadow-card">
           <h3 className="font-semibold text-brand-yellow">Seçilen makine görseli</h3>
           <div className="relative mt-2 overflow-hidden rounded-xl">
-            <MachineImage
-              imageKey={imageKey}
+            <MachineSectionPhoto
+              sectionId={fault.sectionId}
               alt={section?.name ?? 'Makine'}
               className="h-52 w-full object-cover"
             />
@@ -91,12 +93,16 @@ export function FaultDetailPage() {
         <article className="rounded-2xl bg-white p-4 shadow-card">
           <h3 className="font-semibold">Operatör fotoğrafları</h3>
           <div className="mt-2 grid grid-cols-2 gap-2">
-            {fault.attachments.map((a) => (
+            {fault.attachments.length === 0 ? (
+              <p className="text-sm text-navy-500">Yakın plan fotoğraf eklenmedi. Konum görsel seçimle belirlendi.</p>
+            ) : (
+              fault.attachments.map((a) => (
               <figure key={a.id}>
                 <SafeImg src={a.url} alt={a.name} className="h-32 w-full rounded-xl object-cover" />
                 <figcaption className="text-xs text-navy-500">{a.name}</figcaption>
               </figure>
-            ))}
+              ))
+            )}
           </div>
         </article>
         <article className="rounded-2xl bg-white p-4 shadow-card">

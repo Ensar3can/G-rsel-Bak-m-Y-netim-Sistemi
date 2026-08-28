@@ -85,6 +85,12 @@ export const MACHINE_PARTS: MachinePart[] = [
   { id: 'part-electrical', name: 'Elektrik paneli', code: 'ELP', typicalFailure: 'Kontaktör, sigorta, ısınma' },
   { id: 'part-cutter', name: 'Kesici ünite', code: 'CUT', typicalFailure: 'Bıçak aşınması, hizasızlık' },
   { id: 'part-bearing', name: 'Rulman', code: 'BRG', typicalFailure: 'Gürültü, titreşim, kilitlenme' },
+  {
+    id: 'part-unknown',
+    name: 'Belirsiz / diğer alan',
+    code: 'UNK',
+    typicalFailure: 'Operatör konumu net seçemedi',
+  },
 ];
 
 export const SPARE_PARTS: SparePart[] = [

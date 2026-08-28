@@ -1,4 +1,5 @@
 import { MACHINE_IMAGE_SVG, type MachineImageKey } from '@/data/machineAssets';
+import { sectionMapById } from '@/data/machineMapConfig';
 import { cn } from '@/utils/format';
 import { Cog, Factory, Package, ScanLine } from 'lucide-react';
 import { useState } from 'react';
@@ -92,4 +93,34 @@ export function SafeImg({
     );
   }
   return <img src={src} alt={alt} className={className} onError={() => setFailed(true)} />;
+}
+
+/** `photoPath` varsa gerçek fotoğraf; yoksa veya yüklenemezse SVG şema. */
+export function MachineSectionPhoto({
+  sectionId,
+  alt,
+  className,
+}: {
+  sectionId: string;
+  alt: string;
+  className?: string;
+}) {
+  const map = sectionMapById(sectionId);
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const imageKey = (map?.imageKey ?? 'lineOverview') as MachineImageKey;
+
+  if (map?.photoPath && !photoFailed) {
+    return (
+      <img
+        src={map.photoPath}
+        alt={alt}
+        className={cn('bg-navy-900 object-cover', className)}
+        onError={() => setPhotoFailed(true)}
+      />
+    );
+  }
+
+  return (
+    <MachineImage imageKey={imageKey} alt={alt} fallbackSubtitle={map?.shortName} className={className} />
+  );
 }
