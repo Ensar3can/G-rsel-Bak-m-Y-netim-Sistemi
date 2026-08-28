@@ -7,7 +7,9 @@ import {
 } from '@/data/catalog';
 import type { FaultCategory, FaultPriority } from '@/types';
 import { cn } from '@/utils/format';
-import { Mic, ImagePlus } from 'lucide-react';
+import { prepareDemoPhoto } from '@/utils/prepareDemoPhoto';
+import { ImagePlus } from 'lucide-react';
+import { useState } from 'react';
 
 export interface FaultFormValues {
   machineLineId: string;
@@ -63,6 +65,8 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
   const line = MACHINE_LINES.find((l) => l.id === values.machineLineId);
   const section = MACHINE_SECTIONS.find((s) => s.id === values.sectionId);
   const part = MACHINE_PARTS.find((p) => p.id === values.partId);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoHint, setPhotoHint] = useState('');
 
   return (
     <form
@@ -177,7 +181,7 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
           <span className="text-xs text-red-600">{field('productionStopped')}</span>
         ) : null}
       </fieldset>
-      <label className="text-sm font-medium">
+      <label className="text-sm font-medium md:col-span-2">
         Fotoğraf ekle
         <span className="mt-1 flex min-h-[48px] items-center gap-2 rounded-xl border border-dashed border-navy-300 px-3 py-2">
           <ImagePlus size={18} />
@@ -185,29 +189,35 @@ export function FaultReportForm({ values, errors, operatorName, onChange, onSubm
             type="file"
             accept="image/*"
             className="max-w-full text-sm"
+            disabled={photoBusy}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (!file) {
                 onChange({ photoName: '', photoUrl: '' });
+                setPhotoHint('');
                 return;
               }
-              const reader = new FileReader();
-              reader.onload = () =>
-                onChange({ photoName: file.name, photoUrl: String(reader.result ?? '') });
-              reader.readAsDataURL(file);
+              setPhotoBusy(true);
+              setPhotoHint('Görsel küçültülüyor...');
+              void prepareDemoPhoto(file)
+                .then((ready) => {
+                  onChange({ photoName: ready.name, photoUrl: ready.dataUrl });
+                  setPhotoHint('');
+                })
+                .catch((err: unknown) => {
+                  onChange({ photoName: '', photoUrl: '' });
+                  setPhotoHint(err instanceof Error ? err.message : 'Görsel işlenemedi.');
+                })
+                .finally(() => setPhotoBusy(false));
             }}
           />
         </span>
         <span className="text-xs text-navy-500">
-          {values.photoName || 'Dosya seçilmezse örnek saha görseli eklenir.'}
+          {photoBusy ? 'Görsel küçültülüyor...' : values.photoName || 'Dosya seçilmezse örnek saha görseli eklenir.'}
         </span>
+        {photoHint && !photoBusy ? <span className="block text-xs text-red-600">{photoHint}</span> : null}
+        {errors.photoUrl ? <span className="block text-xs text-red-600">{errors.photoUrl}</span> : null}
       </label>
-      <div className="rounded-xl border border-dashed border-navy-300 p-3 text-sm text-navy-600">
-        <p className="flex items-center gap-2 font-medium text-navy-800">
-          <Mic size={16} /> Sesli not (yakında)
-        </p>
-        <p className="mt-1 text-xs">Kayıt arayüzü hazır; ses işleme bu sürümde bağlı değildir.</p>
-      </div>
       <label className="text-sm font-medium md:col-span-2">
         Bildirimi yapan operatör
         <input

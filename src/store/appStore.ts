@@ -1,3 +1,4 @@
+import { MACHINE_IMAGE_KEYS } from '@/data/machineAssets';
 import { MACHINE_PARTS, USERS } from '@/data/catalog';
 import { faultRepository } from '@/services/localFaultRepository';
 import { storage } from '@/services/storage';
@@ -89,20 +90,46 @@ export const useAppStore = create<AppState>((set, get) => ({
       maintenanceNotes: payload.maintenanceNotes ?? [],
       spareParts: payload.spareParts ?? [],
     };
-    await faultRepository.upsertFault(record);
-    const n = notify({
-      type: record.priority === 'critical' ? 'new_critical' : 'new_fault',
-      title: record.priority === 'critical' ? 'Yeni kritik arıza kaydı oluşturuldu' : 'Yeni arıza kaydı',
-      message: `${record.id}: ${MACHINE_PARTS.find((p) => p.id === record.partId)?.name ?? 'Parça'} bildirildi.`,
-      faultId: record.id,
-    });
-    await faultRepository.upsertNotification(n);
-    set((s) => ({
-      faults: [record, ...s.faults],
-      notifications: [n, ...s.notifications],
-    }));
-    get().pushToast(`${record.id} kaydı oluşturuldu.`);
-    return record;
+    const persistRecord = async (record: FaultRecord) => {
+      await faultRepository.upsertFault(record);
+      const n = notify({
+        type: record.priority === 'critical' ? 'new_critical' : 'new_fault',
+        title: record.priority === 'critical' ? 'Yeni kritik arıza kaydı oluşturuldu' : 'Yeni arıza kaydı',
+        message: `${record.id}: ${MACHINE_PARTS.find((p) => p.id === record.partId)?.name ?? 'Parça'} bildirildi.`,
+        faultId: record.id,
+      });
+      await faultRepository.upsertNotification(n);
+      set((s) => ({
+        faults: [record, ...s.faults],
+        notifications: [n, ...s.notifications],
+      }));
+      get().pushToast(`${record.id} kaydı oluşturuldu.`);
+      return record;
+    };
+
+    try {
+      return await persistRecord(record);
+    } catch {
+      const fallback: FaultRecord = {
+        ...record,
+        attachments: [
+          {
+            id: `att-${Date.now()}`,
+            name: 'saha-foto.jpg',
+            kind: 'photo',
+            url: MACHINE_IMAGE_KEYS.photoPlaceholder,
+            createdAt: now,
+          },
+        ],
+      };
+      get().pushToast('Fotoğraf kaydedilemedi, daha küçük bir görsel deneyin.', 'warning');
+      try {
+        return await persistRecord(fallback);
+      } catch {
+        get().pushToast('Fotoğraf kaydedilemedi, daha küçük bir görsel deneyin.', 'warning');
+        throw new Error('SAVE_FAILED');
+      }
+    }
   },
 
   updateFault: async (id, patch, actorId) => {

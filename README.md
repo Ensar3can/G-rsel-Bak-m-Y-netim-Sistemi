@@ -114,11 +114,13 @@ Giriş ekranı yoktur. Üst menüdeki **Rol** listesinden geçiş yapın:
 3. **Bakım panosu** — Duruma göre dikey kanban; özet kart ve müdahale paneli.
 4. **Arıza detayı** — Görsel konum, zaman çizelgesi, notlar, malzemeler, benzer kayıtlar.
 5. **Yapay zekâ önerileri** — Hızlı müdahale / standart / kapsamlı çözüm katmanları; kural tabanlı `aiRecommendationService`. Karar destek uyarısı içerir.
-6. **Raporlar** — Haftalık/aylık filtre, grafikler, KPI, yönetici özeti, PDF/Excel yakında mesajı.
+6. **Raporlar** — Haftalık/aylık filtre, grafikler, KPI, yönetici özeti.
 7. **Yönetim** — Açık arıza, duruş riski, aksiyon önerileri.
 8. **Bildirimler** — Sağ üst rozet; kritik kayıt, üzerine alma, kapatma vb.
 
-Makine görselleri `public/assets/machines/` altındadır. Yollar `src/data/machineAssets.ts` üzerinden yönetilir; gerçek fotoğraflar bu dosyalar değiştirilerek bağlanır.
+Makine görselleri `src/assets/machines/` altındadır. Yollar `src/data/machineAssets.ts` üzerinden yönetilir.
+
+Demo verileri tarayıcı localStorage’ında saklanır. Farklı cihazlar arasında gerçek zamanlı kayıt paylaşımı için sonraki fazda merkezi backend ve gerçek zamanlı bildirim altyapısı gerekir.
 
 ## Gerçek sisteme geçerken yapılması gerekenler
 

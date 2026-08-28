@@ -51,8 +51,9 @@ const titles: Record<string, string> = {
 };
 
 function isoDaysAgo(days: number, hour = 8, minute = 15): string {
-  const d = new Date('2026-08-27T12:00:00+03:00');
-  d.setDate(d.getDate() - days);
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - Math.max(0, Math.floor(days)));
   d.setHours(hour, minute, 0, 0);
   return d.toISOString();
 }
@@ -73,7 +74,7 @@ function makeFault(index: number): FaultRecord {
   const part = MACHINE_PARTS[index % MACHINE_PARTS.length];
   const status = statuses[index % statuses.length];
   const priority = priorities[(index * 3) % priorities.length];
-  const daysAgo = (index * 2) % 40;
+  const daysAgo = index < 3 ? 0 : 1 + ((index * 3) % 29);
   const createdAt = isoDaysAgo(daysAgo, 7 + (index % 10), (index * 7) % 50);
   const operator = USERS[index % 2];
   const maint = USERS[2 + (index % 2)];
@@ -88,7 +89,7 @@ function makeFault(index: number): FaultRecord {
   if (status !== 'new') {
     history.push({
       status: 'reviewing',
-      at: isoDaysAgo(Math.max(0, daysAgo - 0.1), 9, 0),
+      at: isoDaysAgo(daysAgo, 9, 0),
       by: maint.id,
       note: 'Kayıt üzerine alındı',
     });
@@ -96,7 +97,7 @@ function makeFault(index: number): FaultRecord {
   if (['waiting_parts', 'in_progress', 'resolved', 'closed'].includes(status)) {
     history.push({
       status: status === 'waiting_parts' ? 'waiting_parts' : 'in_progress',
-      at: isoDaysAgo(Math.max(0, daysAgo - 0.3), 11, 20),
+      at: isoDaysAgo(daysAgo, 11, 20),
       by: maint.id,
     });
   }

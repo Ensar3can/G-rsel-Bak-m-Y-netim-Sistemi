@@ -41,7 +41,8 @@ export function NewFaultPage() {
     const part = MACHINE_PARTS.find((p) => p.id === next.partId);
     const line = MACHINE_LINES.find((l) => l.id === lineId);
     const occurred = new Date(next.occurredAt).toISOString();
-    const record = await createFault({
+    try {
+      const record = await createFault({
       title: `${line?.code} · ${part?.name} arızası`,
       machineLineId: lineId,
       sectionId: next.sectionId,
@@ -74,7 +75,10 @@ export function NewFaultPage() {
         hotspotY: 42,
       },
     });
-    navigate(`/arizalar/${record.id}`);
+      navigate(`/arizalar/${record.id}`);
+    } catch {
+      setErrors({ photoUrl: 'Fotoğraf kaydedilemedi, daha küçük bir görsel deneyin.' });
+    }
   };
 
   return (

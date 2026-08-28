@@ -18,7 +18,17 @@ export const storage = {
     }
   },
   save(state: PersistedState) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+      const quota =
+        error instanceof DOMException &&
+        (error.name === 'QuotaExceededError' || error.code === 22 || error.code === 1014);
+      if (quota) {
+        throw new Error('QUOTA');
+      }
+      throw error;
+    }
   },
   clear() {
     localStorage.removeItem(STORAGE_KEY);

@@ -12,7 +12,6 @@ import {
 import { applyReportFilter, avg, previousPeriod } from '@/services/reportService';
 import { useAppStore } from '@/store/appStore';
 import type { FaultCategory, FaultPriority, FaultStatus, ReportFilter } from '@/types';
-import { useAppStore as useToast } from '@/store/appStore';
 import { Clock, Flame, PauseCircle, Timer } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import {
@@ -38,7 +37,6 @@ const COLORS = ['#12203a', '#F5C518', '#c2410c', '#047857', '#1d4ed8', '#7c3aed'
 export function ReportsPage() {
   const hydrated = useAppStore((s) => s.hydrated);
   const faults = useAppStore((s) => s.faults);
-  const pushToast = useToast((s) => s.pushToast);
   const [filter, setFilter] = useState<ReportFilter>(() => {
     const end = new Date();
     return {
@@ -243,20 +241,6 @@ export function ReportsPage() {
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          className="rounded-xl bg-navy-900 px-3 py-2 text-sm font-semibold text-white"
-          onClick={() => pushToast('PDF dışa aktarma yakında aktif olacak.', 'info')}
-        >
-          PDF dışa aktar
-        </button>
-        <button
-          type="button"
-          className="rounded-xl border border-navy-900 px-3 py-2 text-sm font-semibold"
-          onClick={() => pushToast('Excel dışa aktarma yakında aktif olacak.', 'info')}
-        >
-          Excel dışa aktar
-        </button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
